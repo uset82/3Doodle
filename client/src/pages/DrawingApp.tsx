@@ -9,7 +9,7 @@ import HelpModal from '@/components/HelpModal';
 import ProcessingIndicator from '@/components/ProcessingIndicator';
 import { useDrawing } from '@/hooks/useDrawing';
 import { apiRequest } from '@/lib/queryClient';
-import { GalleryItem } from '@/shared/schema';
+import { GalleryItem } from '../../../shared/schema';
 
 const DrawingApp = () => {
   const { toast } = useToast();
@@ -27,6 +27,7 @@ const DrawingApp = () => {
     setCurrentColor,
     setBrushSize,
     isDrawn,
+    setIsDrawn,
     getCanvasImage
   } = useDrawing();
 
@@ -152,6 +153,7 @@ const DrawingApp = () => {
               currentColor={currentColor}
               brushSize={brushSize}
               isDrawn={isDrawn}
+              setIsDrawn={setIsDrawn}
             />
             
             <div className="mt-4 flex flex-wrap justify-between gap-4">
