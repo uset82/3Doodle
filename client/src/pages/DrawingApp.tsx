@@ -199,18 +199,36 @@ const DrawingApp = () => {
             <div>
               <h3 className="text-sm text-gray-600 mb-2">Try Drawing</h3>
               <div className="grid grid-cols-2 gap-2">
-                <div className="bg-gray-100 p-2 rounded-lg text-center">
+                <div className="bg-gray-100 p-2 rounded-lg text-center hover:bg-primary-50 cursor-pointer transition-colors">
                   <span className="text-sm">Apple</span>
                 </div>
-                <div className="bg-gray-100 p-2 rounded-lg text-center">
+                <div className="bg-gray-100 p-2 rounded-lg text-center hover:bg-primary-50 cursor-pointer transition-colors">
                   <span className="text-sm">Cat</span>
                 </div>
-                <div className="bg-gray-100 p-2 rounded-lg text-center">
+                <div className="bg-gray-100 p-2 rounded-lg text-center hover:bg-primary-50 cursor-pointer transition-colors">
                   <span className="text-sm">Flower</span>
                 </div>
-                <div className="bg-gray-100 p-2 rounded-lg text-center">
+                <div className="bg-gray-100 p-2 rounded-lg text-center hover:bg-primary-50 cursor-pointer transition-colors">
                   <span className="text-sm">House</span>
                 </div>
+                <div className="bg-gray-100 p-2 rounded-lg text-center hover:bg-primary-50 cursor-pointer transition-colors">
+                  <span className="text-sm">Dog</span>
+                </div>
+                <div className="bg-gray-100 p-2 rounded-lg text-center hover:bg-primary-50 cursor-pointer transition-colors">
+                  <span className="text-sm">Car</span>
+                </div>
+                <div className="bg-gray-100 p-2 rounded-lg text-center hover:bg-primary-50 cursor-pointer transition-colors">
+                  <span className="text-sm">Sun</span>
+                </div>
+                <div className="bg-gray-100 p-2 rounded-lg text-center hover:bg-primary-50 cursor-pointer transition-colors">
+                  <span className="text-sm">Tree</span>
+                </div>
+              </div>
+              <div className="mt-4 p-3 bg-primary-50 rounded-lg">
+                <p className="text-xs text-primary-700">
+                  <i className="ri-lightbulb-line mr-1"></i>
+                  <strong>Tip:</strong> Draw a simple outline. The AI is great at recognizing basic shapes!
+                </p>
               </div>
             </div>
           </div>
