@@ -36,20 +36,21 @@ const featureTiles = [
 const LandingPage = () => {
   const [, navigate] = useLocation();
 
+  const handleStartDoodling = () => {
+    navigate("/draw");
+  };
+
   return (
-    <main className="min-h-screen bg-[#bdf4ff] text-[#23244d] studio-pattern flex flex-col">
-
-      <section className="relative w-full max-w-[1400px] mx-auto px-4 py-8 sm:px-6 sm:py-10 lg:px-10 lg:py-12 flex-1 flex items-center">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center w-full z-10">
-
-          {/* Left Column: Hero Text & Feature Cards */}
+    <main className="flex min-h-screen flex-col bg-[#bdf4ff] text-[#23244d] studio-pattern">
+      <section className="relative mx-auto flex w-full max-w-[1400px] flex-1 items-center px-4 py-8 sm:px-6 sm:py-10 lg:px-10 lg:py-12">
+        <div className="z-10 grid w-full grid-cols-1 items-center gap-8 lg:grid-cols-2 lg:gap-12">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55 }}
-            className="space-y-5 flex flex-col justify-center"
+            className="flex flex-col justify-center space-y-5"
           >
-            <div className="w-fit inline-flex items-center gap-2 rounded-full border-4 border-white bg-[#fffdf7] px-4 py-2 font-nunito text-sm font-extrabold text-[#23244d] shadow-[0_8px_0_rgba(35,36,77,0.1)]">
+            <div className="inline-flex w-fit items-center gap-2 rounded-full border-4 border-white bg-[#fffdf7] px-4 py-2 font-nunito text-sm font-extrabold text-[#23244d] shadow-[0_8px_0_rgba(35,36,77,0.1)]">
               <Sparkles className="h-4 w-4 text-[#ff477e]" aria-hidden="true" />
               Toy studio for big ideas
             </div>
@@ -67,7 +68,7 @@ const LandingPage = () => {
               <motion.button
                 whileHover={{ y: -3 }}
                 whileTap={{ scale: 0.98 }}
-                onClick={() => navigate("/draw")}
+                onClick={handleStartDoodling}
                 className="toy-button bg-[#ff477e] text-lg text-white"
               >
                 Start doodling
@@ -75,7 +76,7 @@ const LandingPage = () => {
               </motion.button>
               <button
                 type="button"
-                onClick={() => navigate("/draw")}
+                onClick={handleStartDoodling}
                 className="toy-button bg-[#fffdf7] text-[#23244d]"
               >
                 <Palette className="h-5 w-5 text-[#14b8c4]" aria-hidden="true" />
@@ -83,10 +84,10 @@ const LandingPage = () => {
               </button>
             </div>
 
-            {/* Feature Cards Grid */}
-            <div className="grid gap-3 pt-2 grid-cols-1 sm:grid-cols-3">
+            <div className="grid grid-cols-1 gap-3 pt-2 sm:grid-cols-3">
               {featureTiles.map((feature, index) => {
                 const Icon = feature.icon;
+
                 return (
                   <motion.article
                     key={feature.title}
@@ -106,62 +107,66 @@ const LandingPage = () => {
             </div>
           </motion.div>
 
-          {/* Right Column: Hero Illustration with toy whiteboard frame & effects */}
           <motion.div
             initial={{ opacity: 0, scale: 0.92 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.7, delay: 0.2 }}
-            className="flex items-center justify-center relative p-6 lg:p-8"
+            className="flex items-center justify-center p-3 sm:p-5 lg:p-8"
           >
-            {/* Colorful glow behind the frame */}
-            <div className="absolute inset-4 rounded-[2.5rem] bg-gradient-to-br from-[#ff477e]/25 via-[#ffd166]/20 to-[#14b8c4]/25 blur-2xl" aria-hidden="true" />
-
-            {/* Main whiteboard frame */}
-            <motion.div
-              animate={{ y: [0, -8, 0] }}
-              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              className="relative w-full max-w-[500px] mx-auto"
+            <motion.button
+              type="button"
+              aria-label="Start doodling"
+              title="Start doodling"
+              onClick={handleStartDoodling}
+              whileHover={{ y: -4, scale: 1.01 }}
+              whileTap={{ scale: 0.99 }}
+              className="group relative w-full max-w-[620px] rounded-[2.5rem] p-2 text-left outline-none transition focus-visible:ring-4 focus-visible:ring-[#fff3b0]/80 focus-visible:ring-offset-4 focus-visible:ring-offset-[#bdf4ff] sm:p-3 lg:p-4"
             >
-              {/* Outer colored border ring */}
-              <div className="rounded-[2.2rem] bg-gradient-to-br from-[#ff477e] via-[#ffd166] to-[#14b8c4] p-[5px] shadow-[0_16px_48px_rgba(255,71,126,0.22),0_8px_24px_rgba(20,184,196,0.18)]">
-                {/* White frame */}
-                <div className="rounded-[2rem] border-[8px] border-white bg-white overflow-hidden shadow-[inset_0_2px_8px_rgba(35,36,77,0.08)]">
-                  <img
-                    src={doodleHero}
-                    alt="Children drawing colorful 3Doodle art"
-                    className="w-full h-auto block select-none pointer-events-none"
-                  />
-                </div>
-              </div>
+              <div
+                aria-hidden="true"
+                className="absolute inset-2 rounded-[2.5rem] bg-gradient-to-br from-[#ff477e]/25 via-[#ffd166]/20 to-[#14b8c4]/25 blur-2xl sm:inset-4"
+              />
 
-              {/* Gallery ready badge — anchored top-right of frame */}
               <motion.div
-                initial={{ rotate: 0 }}
-                animate={{ rotate: [0, 3, -2, 3, 0] }}
-                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute -top-3 -right-3 bg-[#fff3b0] text-[#ff477e] border-[3px] border-white px-3.5 py-2 rounded-2xl font-nunito text-xs font-black shadow-[0_6px_0_rgba(35,36,77,0.1)] flex items-center gap-1.5 z-10"
+                animate={{ y: [0, -8, 0] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                className="relative aspect-square w-full"
               >
-                <Images className="h-4 w-4" />
-                Gallery ready!
+                <div className="rounded-[2.2rem] bg-gradient-to-br from-[#ff477e] via-[#ffd166] to-[#14b8c4] p-[5px] shadow-[0_16px_48px_rgba(255,71,126,0.22),0_8px_24px_rgba(20,184,196,0.18)]">
+                  <div className="relative aspect-square overflow-hidden rounded-[2rem] border-[8px] border-white bg-white shadow-[inset_0_2px_8px_rgba(35,36,77,0.08)]">
+                    <img
+                      src={doodleHero}
+                      alt="Children drawing colorful 3Doodle art"
+                      className="block h-full w-full select-none object-cover pointer-events-none"
+                    />
+                  </div>
+                </div>
+
+                <motion.div
+                  initial={{ rotate: 0 }}
+                  animate={{ rotate: [0, 3, -2, 3, 0] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                  className="absolute -top-2 -right-2 z-10 flex items-center gap-1.5 rounded-2xl border-[3px] border-white bg-[#fff3b0] px-3 py-2 font-nunito text-xs font-black text-[#ff477e] shadow-[0_6px_0_rgba(35,36,77,0.1)] sm:-top-3 sm:-right-3 sm:px-3.5"
+                >
+                  <Images className="h-4 w-4" />
+                  Gallery ready!
+                </motion.div>
+
+                <div className="absolute -top-4 -left-2 select-none pointer-events-none text-[#ff477e] sm:-top-5 sm:-left-3">
+                  <Sparkles className="h-6 w-6 drop-shadow-[0_2px_4px_rgba(255,71,126,0.4)] sm:h-7 sm:w-7" />
+                </div>
+                <div className="absolute -bottom-3 -right-4 select-none pointer-events-none text-[#ffd166] sm:-bottom-4 sm:-right-5">
+                  <Star className="h-5 w-5 fill-[#ffd166] drop-shadow-[0_2px_4px_rgba(255,209,102,0.5)] sm:h-6 sm:w-6" />
+                </div>
+                <div className="absolute top-1/2 -left-3 select-none pointer-events-none opacity-60 text-[#14b8c4] sm:-left-5">
+                  <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                </div>
               </motion.div>
-
-              {/* Sparkle decorations */}
-              <div className="absolute -top-5 -left-3 text-[#ff477e] animate-bounce select-none pointer-events-none">
-                <Sparkles className="h-7 w-7 drop-shadow-[0_2px_4px_rgba(255,71,126,0.4)]" />
-              </div>
-              <div className="absolute -bottom-4 -right-5 text-[#ffd166] animate-pulse select-none pointer-events-none">
-                <Star className="h-6 w-6 fill-[#ffd166] drop-shadow-[0_2px_4px_rgba(255,209,102,0.5)]" />
-              </div>
-              <div className="absolute top-1/2 -left-5 text-[#14b8c4] animate-ping select-none pointer-events-none opacity-60">
-                <Sparkles className="h-4 w-4" />
-              </div>
-            </motion.div>
+            </motion.button>
           </motion.div>
-
         </div>
       </section>
 
-      {/* Playful color stripe footer */}
       <footer className="w-full shrink-0 overflow-hidden">
         <div className="h-3 bg-[#15b8c6]" />
         <div className="h-3 bg-[#ffcf33]" />
@@ -172,4 +177,3 @@ const LandingPage = () => {
 };
 
 export default LandingPage;
-

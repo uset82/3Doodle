@@ -1,8 +1,8 @@
 import type { ChatMessage } from "@shared/schema";
 
 const OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions";
-const CHAT_MODEL = "openrouter/free";
-const IMAGE_MODEL = "sourceful/riverflow-v2.5-pro:free";
+const CHAT_MODEL = process.env.OPENROUTER_CHAT_MODEL || "moonshotai/kimi-k2.6:free";
+const IMAGE_MODEL = process.env.OPENROUTER_IMAGE_MODEL || "sourceful/riverflow-v2.5-pro:free";
 
 const CHAT_SYSTEM_PROMPT =
   "You are 3Doodle's friendly drawing buddy for children. Keep replies short, encouraging, safe, and easy to understand. Help with drawing ideas, simple steps, colors, and what to try next. Never mention API providers or internal model names.";
@@ -33,6 +33,9 @@ type OpenRouterChatResponse = {
   }>;
   error?: {
     message?: string;
+    metadata?: {
+      raw?: string;
+    };
   };
 };
 
@@ -64,21 +67,8 @@ const objectAliases: Record<string, string[]> = {
   tree: ["tree", "trees", "arbol", "arboles"],
 };
 
-type NetlifyGlobal = typeof globalThis & {
-  Netlify?: {
-    env?: {
-      get: (key: string) => string | undefined;
-    };
-  };
-};
-
-function getEnvValue(key: string): string | undefined {
-  const netlifyValue = (globalThis as NetlifyGlobal).Netlify?.env?.get(key);
-  return netlifyValue || process.env[key];
-}
-
 function getApiKey(envVarName: string): string {
-  const apiKey = getEnvValue(envVarName) || getEnvValue("OPENROUTER_API_KEY");
+  const apiKey = process.env[envVarName] || process.env.OPENROUTER_API_KEY;
 
   if (!apiKey) {
     throw new OpenRouterConfigError(envVarName);
@@ -124,10 +114,38 @@ async function postOpenRouterChatCompletion(payload: Record<string, unknown>, ap
   const data = (await response.json().catch(() => ({}))) as OpenRouterChatResponse;
 
   if (!response.ok) {
-    throw new Error(data.error?.message || `OpenRouter request failed with status ${response.status}`);
+    throw new Error(
+      data.error?.metadata?.raw
+        || data.error?.message
+        || `OpenRouter request failed with status ${response.status}`,
+    );
   }
 
   return data;
+}
+
+export function getFallbackChatReply(messages: ChatMessage[]): string {
+  const latestUserMessage = [...messages].reverse().find((message) => message.role === "user");
+  const text = latestUserMessage?.content.toLowerCase().trim() || "";
+  const objectType = getRequestedImageObject(messages);
+
+  if (objectType) {
+    return `Great idea! Draw a big simple ${objectType} outline first, add one or two fun details, then tap Generate 3D.`;
+  }
+
+  if (/\b(hi|hello|hey|hola)\b/.test(text)) {
+    return "Hi! Try a simple apple, cat, rocket, flower, or sunny house. Big outlines work best.";
+  }
+
+  if (/\b(idea|draw|doodle|what|suggest)\b/.test(text)) {
+    return "Try a rocket with a round window, a flower with five petals, or a house with a big door.";
+  }
+
+  if (/\b(color|colour|paint|rainbow)\b/.test(text)) {
+    return "Pick two bright colors: one for the main shape and one for small details like dots, stripes, or stars.";
+  }
+
+  return "That sounds fun. Start with one big shape, add a few clear details, then make it 3D when you are ready.";
 }
 
 export async function chatWithOpenRouter(messages: ChatMessage[]): Promise<string> {
@@ -235,7 +253,7 @@ export async function detectObjectInDrawing(imageData: string): Promise<string> 
         temperature: 0,
         stream: false,
       },
-      getApiKey("OPENROUTER_IMAGE_API_KEY"),
+      getApiKey("OPENROUTER_CHAT_API_KEY"),
     );
 
     const content = result.choices?.[0]?.message?.content;
@@ -283,6 +301,9 @@ export async function generate3DModel(objectType: string, sourceImageData?: stri
           },
         ],
         modalities: ["image"],
+        reasoning: {
+          effort: "low",
+        },
         image_config: {
           aspect_ratio: "1:1",
           image_size: "1K",

@@ -23,16 +23,19 @@ The application features:
 
 ## APIs Used
 
-3Doodle utilizes two separate OpenRouter API keys:
-- **OPENROUTER_CHAT_API_KEY** with **openrouter/free**: Used by the chatbox for normal text replies.
-- **OPENROUTER_IMAGE_API_KEY** with **sourceful/riverflow-v2.5-pro:free** for chat image requests and sketch-to-3D image generation.
+3Doodle uses OpenRouter API keys plus two model IDs:
+- **OPENROUTER_API_KEY**: one OpenRouter secret key for the whole app
+- **OPENROUTER_CHAT_API_KEY**: optional key for chat and Kimi-based doodle detection
+- **OPENROUTER_IMAGE_API_KEY**: optional key for Riverflow image generation
+- **OPENROUTER_CHAT_MODEL**: defaults to **moonshotai/kimi-k2.6:free**
+- **OPENROUTER_IMAGE_MODEL**: defaults to **sourceful/riverflow-v2.5-pro:free**
 
-You can also set one **OPENROUTER_API_KEY** instead; the server uses it as a fallback for both chat and image generation.
+If you set the specific chat and image keys, the app uses those first. Otherwise, it falls back to **OPENROUTER_API_KEY**.
 
 ## Installation
 
 ### Prerequisites
-- Node.js (version 16 or later)
+- Node.js (version 20 or later)
 - npm (comes with Node.js)
 - An OpenRouter API key
 
@@ -40,8 +43,8 @@ You can also set one **OPENROUTER_API_KEY** instead; the server uses it as a fal
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/3doodle.git
-   cd 3doodle
+   git clone https://github.com/uset82/3Doodle.git
+   cd 3Doodle
    ```
 
 2. **Install dependencies**
@@ -51,11 +54,13 @@ You can also set one **OPENROUTER_API_KEY** instead; the server uses it as a fal
 
 3. **Set up environment variables**
    
-   Create a `.env` file in the root directory and add both OpenRouter API keys:
+   Create a `.env` file in the root directory and add your OpenRouter key plus optional model overrides:
    ```
    OPENROUTER_API_KEY=your_openrouter_api_key_here
    OPENROUTER_CHAT_API_KEY=your_chat_api_key_here
    OPENROUTER_IMAGE_API_KEY=your_image_api_key_here
+   OPENROUTER_CHAT_MODEL=moonshotai/kimi-k2.6:free
+   OPENROUTER_IMAGE_MODEL=sourceful/riverflow-v2.5-pro:free
    ```
 
 4. **Start the application**
@@ -67,6 +72,29 @@ You can also set one **OPENROUTER_API_KEY** instead; the server uses it as a fal
    
    Open your browser and go to `http://localhost:5000`
 
+## Deploying
+
+This project now deploys with Canner instead of Netlify.
+
+1. Sign in once:
+   ```bash
+   npx @canner-ca/cli@latest login
+   ```
+
+2. The repo already includes `canner.json` with the project slug.
+
+3. Deploy from the repo root:
+   ```bash
+   npx @canner-ca/cli@latest deploy --follow
+   ```
+
+   Or run the CLI directly:
+   ```bash
+   npm run deploy
+   ```
+
+4. Set your OpenRouter keys in the Canner dashboard environment variables.
+
 ## API Requirements
 
 To use 3Doodle, you need:
@@ -74,9 +102,10 @@ To use 3Doodle, you need:
 1. OpenRouter API key configuration. You can obtain keys from [OpenRouter](https://openrouter.ai/):
    - Create an account if you don't already have one
    - Set `OPENROUTER_API_KEY` to use one key for the whole app
-   - Or set `OPENROUTER_CHAT_API_KEY` for chat and `OPENROUTER_IMAGE_API_KEY` for Riverflow image generation
+   - Or set `OPENROUTER_CHAT_API_KEY` and `OPENROUTER_IMAGE_API_KEY` if you want separate keys
+   - Optionally override the chat or image model with `OPENROUTER_CHAT_MODEL` and `OPENROUTER_IMAGE_MODEL`
 
-For Netlify deployments, add `OPENROUTER_API_KEY` or the two specific keys in the Netlify environment variable settings. Do not put secret API keys in `netlify.toml`.
+For Canner deployments, add `OPENROUTER_API_KEY`, or add both `OPENROUTER_CHAT_API_KEY` and `OPENROUTER_IMAGE_API_KEY`, in the Canner environment variable settings. You can also set `OPENROUTER_CHAT_MODEL` and `OPENROUTER_IMAGE_MODEL` there if you want to override the defaults. Do not put secret API keys in the repo.
 
 2. Store your API key securely in the `.env` file as mentioned in the installation steps.
 
